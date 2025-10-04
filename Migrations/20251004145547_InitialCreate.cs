@@ -28,11 +28,11 @@ namespace Cinema_Scope.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Titel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Rate = table.Column<double>(type: "float", nullable: false),
                     StoryLine = table.Column<string>(type: "nvarchar(2500)", maxLength: 2500, nullable: false),
                     Poster = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
                     GenreId = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
@@ -43,7 +43,7 @@ namespace Cinema_Scope.Migrations
                         column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cinema_Scope.Migrations
 {
     [DbContext(typeof(CinemaDbContext))]
-    [Migration("20251003230606_InitialCreate")]
+    [Migration("20251004145547_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,10 +53,6 @@ namespace Cinema_Scope.Migrations
                     b.Property<byte>("GenreId")
                         .HasColumnType("tinyint");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<byte[]>("Poster")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -73,6 +69,9 @@ namespace Cinema_Scope.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
 
                     b.HasKey("id");
 
