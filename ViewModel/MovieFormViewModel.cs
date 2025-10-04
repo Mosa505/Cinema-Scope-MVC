@@ -16,7 +16,7 @@ namespace Cinema_Scope.ViewModel
         [Required]
         public string StoryLine { get; set; }
 
-        [Display(Name ="Select Poster...")]
+        [Display(Name ="Select Poster")]
         public byte[] Poster { get; set; }
         [Required]
         public int Year { get; set; }

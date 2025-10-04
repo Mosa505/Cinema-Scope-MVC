@@ -5,10 +5,10 @@
 
 <h2>New Movie</h2>
 <hr />
-<section class="row">
+<section class="row justify-content-between">
     <div class="col-md-4">
 
-        <form method="post" asp-action="Create">
+        <form method="post" asp-action="Create" enctype="multipart/form-data">
             <div class="form-group">
                 <label asp-for="Titel">Title</label>
                 <input asp-for="Titel" class="form-control" maxlength="250" />
@@ -60,5 +60,39 @@
         </form>
 
     </div>
+    <div id="poster-container" class="d-none col-md-4">
+        <img src="" alt="Poster Preview" class="img-thumbnail">
+    </div>
+
 
 </section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#Poster').on('change', function () {
+                var selectedFile = $(this).val().split('\\').pop();
+                $(this).siblings('label').text(selectedFile);
+
+                var posterContainer = $('#poster-container');
+                var image = window.URL.createObjectURL(this.files[0]);
+
+                posterContainer.removeClass('d-none');
+                posterContainer.find('img').attr('src', image);
+            });
+
+            $('#Year').datepicker({
+                format: 'yyyy',
+                viewMode: 'years',
+                minViewMode: 'years',
+                autoclose: true,
+                startDate: new Date('1950-01-01'),
+                endDate: new Date()
+            });
+        });
+    </script>
+}
+
