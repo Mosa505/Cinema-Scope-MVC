@@ -16,15 +16,15 @@ namespace Cinema_Scope.ViewModel
         [Required]
         public string StoryLine { get; set; }
 
-        [Display(Name ="Select Poster")]
-        public byte[] Poster { get; set; }
+        [Display(Name = "Select Poster")]
+        public IFormFile Poster { get; set; }
         [Required]
         public int Year { get; set; }
 
-        [Display(Name ="Genre")]
+        [Display(Name = "Genre")]
         public byte GenreId { get; set; }
 
-        public List<Genre> Genres { get; set; } 
+        public List<Genre> Genres { get; set; }
 
     }
 }

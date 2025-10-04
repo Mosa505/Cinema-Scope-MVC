@@ -1,6 +1,8 @@
 ﻿@model MovieFormViewModel
 @{
     ViewData["Title"] = "Add New Movie";
+
+    SelectList GenreList = new SelectList(ViewBag.Genre, "Id", "Name");
 }
 
 <h2>New Movie</h2>
@@ -15,26 +17,28 @@
                 <span asp-validation-for="Titel" class="text-danger"></span>
             </div>
             <br />
-            <div class="form-group w-50">
-                <label asp-for="Year">Year</label>
-                <input asp-for="Year" class="form-control" value="" />
-                <span asp-validation-for="Year" class="text-danger"></span>
-            </div>
-            <br />
-            <div class="form-group w-50">
-                <label asp-for="Rate">Rate</label>
-                <input asp-for="Rate" class="form-control" value="" />
-                <span asp-validation-for="Rate" class="text-danger"></span>
-            </div>
-            <br />
             <div class="form-group">
                 <label asp-for="GenreId">Genre</label>
-                <select class="form-control" asp-for="GenreId" asp-items="@(new SelectList(Model.Genres, "Id", "Name"))">
+                <select class="form-control" asp-for="GenreId" asp-items="GenreList">
                     <option value=""> choose Genre.... </option>
                 </select>
                 <span asp-validation-for="GenreId" class="text-danger"></span>
             </div>
             <br />
+            <div class="form-group w-50">
+                <label asp-for="Year">Year</label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group w-50">
+                <label asp-for="Rate">Rate</label>
+                <input asp-for="Rate" class="form-control"  />
+                <span asp-validation-for="Rate" class="text-danger"></span>
+            </div>
+            <br />
+           
+            
             <div class="form-group">
                 <label asp-for="StoryLine">Story Line</label>
                 <textarea asp-for="StoryLine" class="form-control" rows="4" maxlength="2500" placeholder="Enter Story Line"></textarea>
@@ -43,10 +47,11 @@
             <br />
 
             <div class="mb-3">
-                <label asp-for="Poster" class="form-label"> Select Poster </label>
-                <input asp-for="Poster" type="file" class="form-control" accept=".png, .jpg" />
+                <label asp-for="Poster" class="form-label">Select Poster</label>
+                <input asp-for="Poster" type="file" class="form-control" accept=".png,.jpg" />
                 <span asp-validation-for="Poster" class="text-danger"></span>
             </div>
+
             <br />
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-check-lg"></i>
