@@ -16,7 +16,7 @@ namespace Cinema_Scope.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var Movie = await context.Movies.ToListAsync();
+            var Movie = await context.Movies.OrderByDescending(e => e.Rate).ToListAsync();
             return View(Movie);
         }
 
@@ -115,59 +115,86 @@ namespace Cinema_Scope.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MovieFormViewModel Newmovie)
+        public async Task<IActionResult> Edit(MovieFormViewModel model)
         {
-            var movieId = context.Movies.Find(id);
+
             if (!ModelState.IsValid)
             {
                 ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
-                return View(Newmovie);
-
+                return View("MovieForm", model);
             }
+            var movie = await context.Movies.FindAsync(model.Id);
+
+            if (movie == null)
+                return NotFound();
+
             var File = Request.Form.Files;
-            if (!File.Any())
-            {
 
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
-                ModelState.AddModelError("Poster", "Please Select Movie Poster ");
-                return View(Newmovie);
+            if (File.Any())
+            {
+                var Poster = File.FirstOrDefault();
+                using var dataStrem = new MemoryStream();
+                await Poster.CopyToAsync(dataStrem);
+                model.Poster = dataStrem.ToArray();
+                var AllowedExtenshions = new List<string> { ".png", ".jpg" };
+                if (!AllowedExtenshions.Contains(Path.GetExtension(Poster.FileName).ToLower()))
+                {
+
+
+
+                    ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                    ModelState.AddModelError("Poster", ".png or .jpg image Only");
+                    return View("MovieForm", movie);
+
+                }
+
+                if (Poster.Length > 1048576)
+                {
+
+                    ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                    ModelState.AddModelError("Poster", "Poster Size must be less than 1MB");
+                    return View("MovieForm", movie);
+                }
+                movie.Poster = model.Poster;
             }
-            var Poster = File.FirstOrDefault();
-            var AllowedExtenshions = new List<string> { ".png", ".jpg" };
-            if (!AllowedExtenshions.Contains(Path.GetExtension(Poster.FileName).ToLower()))
-            {
 
 
-
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
-                ModelState.AddModelError("Poster", ".png or .jpg image Only");
-                return View(Newmovie);
-
-            }
-
-            if (Poster.Length > 1048576)
-            {
-
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
-                ModelState.AddModelError("Poster", "Poster Size must be less than 1MB");
-                return View(Newmovie);
-            }
-            using var dataStrem = new MemoryStream();
-            await Poster.CopyToAsync(dataStrem);
-            var movie1 = new Movie
-            {
-                Poster = dataStrem.ToArray(),
-                GenreId = Newmovie.GenreId,
-                Titel = Newmovie.Titel,
-                StoryLine = Newmovie.StoryLine,
-                Year = Newmovie.Year,
-                Rate = Newmovie.Rate,
-
-            };
-            context.Movies.Add(movie1);
-            await context.SaveChangesAsync();
+            movie.Titel = model.Titel;
+            movie.Rate = model.Rate;
+            movie.StoryLine = model.StoryLine;
+            movie.Year = model.Year;
+            movie.GenreId = model.GenreId;
+            context.SaveChanges();
             return RedirectToAction(nameof(Index));
 
+        }
+
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var movie = await context.Movies.Include(e=>e.Genre).SingleOrDefaultAsync(e=>e.id==id);
+            if (movie == null)
+                return NotFound();
+
+            return View(movie);
+
+        }
+
+        public async Task<IActionResult> Delete (int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var movie = await context.Movies.Include(e => e.Genre).SingleOrDefaultAsync(e => e.id == id);
+            if (movie == null)
+                return NotFound();
+
+            context.Movies.Remove(movie);  
+            context.SaveChanges();
+            return RedirectToAction(nameof(Index));
 
         }
     }

@@ -18,7 +18,11 @@ namespace Cinema_Scope
             builder.Services.AddDbContext<CinemaDbContext>(options =>
 
             options.UseSqlServer(conString)
+
+            
             );
+            
+           
 
             var app = builder.Build();
 

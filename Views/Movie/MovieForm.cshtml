@@ -5,7 +5,7 @@
     SelectList GenreList = new SelectList(ViewBag.Genre, "Id", "Name");
 }
 
-<h2>@(Model.Id> 0 ? "Edit Movie" : "New Movie");</h2>
+<h2>@(Model.Id> 0 ? "Edit Movie" : "New Movie")</h2>
 <hr />
 <section class="row justify-content-between">
     <div class="col-md-4">
@@ -56,7 +56,7 @@
             <br />
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-check-lg"></i>
-                
+                Save
             </button>
             <a asp-Action="Index" class="btn btn-danger">
                 <i class="bi bi-x"></i>
