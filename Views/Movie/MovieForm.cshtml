@@ -1,16 +1,17 @@
 ﻿@model MovieFormViewModel
 @{
-    ViewData["Title"] = "Add New Movie";
+    ViewData["Title"] = "Movie Form";
 
     SelectList GenreList = new SelectList(ViewBag.Genre, "Id", "Name");
 }
 
-<h2>New Movie</h2>
+<h2>@(Model.Id> 0 ? "Edit Movie" : "New Movie");</h2>
 <hr />
 <section class="row justify-content-between">
     <div class="col-md-4">
 
-        <form method="post" asp-action="Create" enctype="multipart/form-data">
+        <form method="post" asp-action=@(Model.Id> 0 ? "Edit" : "Create") enctype="multipart/form-data">
+            <input  type="hidden" asp-for="Id"/>
             <div class="form-group">
                 <label asp-for="Titel">Title</label>
                 <input asp-for="Titel" class="form-control" maxlength="250" />
@@ -55,7 +56,7 @@
             <br />
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-check-lg"></i>
-                Add
+                
             </button>
             <a asp-Action="Index" class="btn btn-danger">
                 <i class="bi bi-x"></i>
@@ -65,8 +66,8 @@
         </form>
 
     </div>
-    <div id="poster-container" class="d-none col-md-4">
-        <img src="" alt="Poster Preview" class="img-thumbnail">
+    <div id="poster-container" class="@(Model.Id>0?string.Empty:"d-non") col-md-4">
+        <img src="@(Model.Id > 0 ? $"data:image/*;base64,{Convert.ToBase64String(Model.Poster)}" : string.Empty)" alt="Poster Preview" class="img-thumbnail">
     </div>
 
 

@@ -53,3 +53,8 @@ input[type=number] {
 .mt-60-px {
     margin-top: 60px;
 }
+
+.poster {
+
+    min-height:225px;
+}

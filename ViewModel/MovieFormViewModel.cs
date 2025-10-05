@@ -7,9 +7,11 @@ namespace Cinema_Scope.ViewModel
     public class MovieFormViewModel
     {
         [Required]
+        public int Id { get; set; }
+        [Required]
         [StringLength(50)]
         public string Titel { get; set; }
-        [Range(1, 5)]
+        [Range(1, 10)]
         [Required]
         public double Rate { get; set; }
         [StringLength(2500)]
@@ -17,14 +19,14 @@ namespace Cinema_Scope.ViewModel
         public string StoryLine { get; set; }
 
         [Display(Name = "Select Poster")]
-        public IFormFile Poster { get; set; }
+        public byte[]? Poster { get; set; }
         [Required]
         public int Year { get; set; }
 
         [Display(Name = "Genre")]
         public byte GenreId { get; set; }
 
-        public List<Genre> Genres { get; set; }
+        public List<Genre> ?Genres { get; set; }
 
     }
 }

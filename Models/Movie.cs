@@ -9,7 +9,7 @@ namespace Cinema_Scope.Models
         [Required]
         [MaxLength(50)]
         public string Titel { get; set; }
-        [Range(1, 5)]
+        [Range(1, 10)]
         [Required]
 
         public double Rate { get; set; }
