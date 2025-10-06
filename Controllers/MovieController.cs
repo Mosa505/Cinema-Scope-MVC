@@ -10,10 +10,13 @@ namespace Cinema_Scope.Controllers
     public class MovieController : Controller
     {
         private readonly CinemaDbContext context;
+
         public MovieController(CinemaDbContext context)
         {
             this.context = context;
+
         }
+
         public async Task<IActionResult> Index()
         {
             var Movie = await context.Movies.OrderByDescending(e => e.Rate).ToListAsync();
@@ -22,26 +25,39 @@ namespace Cinema_Scope.Controllers
 
         public async Task<IActionResult> Create()
         {
-            ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
-            return View("MovieForm");
+            var genre = new MovieFormViewModel
+            {
+                Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+            };
+            //ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+            return View("MovieForm", genre);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MovieFormViewModel movie)
         {
+
             if (!ModelState.IsValid)
             {
 
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                var genre = new MovieFormViewModel
+                {
+                    Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                };
+
+                //ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                 return View("MovieForm", movie);
             }
 
             var File = Request.Form.Files;
             if (!File.Any())
             {
-
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                var genre = new MovieFormViewModel
+                {
+                    Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                };
+                //ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                 ModelState.AddModelError("Poster", "Please Select Movie Poster ");
                 return View("MovieForm", movie);
             }
@@ -51,8 +67,11 @@ namespace Cinema_Scope.Controllers
             {
 
 
-
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                var genre = new MovieFormViewModel
+                {
+                    Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                };
+                // ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                 ModelState.AddModelError("Poster", ".png or .jpg image Only");
                 return View("MovieForm", movie);
 
@@ -60,8 +79,11 @@ namespace Cinema_Scope.Controllers
 
             if (Poster.Length > 1048576)
             {
-
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                var genre = new MovieFormViewModel
+                {
+                    Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                };
+                //ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                 ModelState.AddModelError("Poster", "Poster Size must be less than 1MB");
                 return View("MovieForm", movie);
             }
@@ -96,11 +118,12 @@ namespace Cinema_Scope.Controllers
             var movie = await context.Movies.FindAsync(id);
             if (movie == null)
                 return NotFound();
-
-            ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+            
+            // ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
 
             var movieold = new MovieFormViewModel
-            {
+            { 
+                Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync(),
                 Id = movie.id,
                 Poster = movie.Poster,
                 Titel = movie.Titel,
@@ -120,7 +143,11 @@ namespace Cinema_Scope.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                var genre = new MovieFormViewModel
+                {
+                    Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                };
+                // ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                 return View("MovieForm", model);
             }
             var movie = await context.Movies.FindAsync(model.Id);
@@ -141,8 +168,11 @@ namespace Cinema_Scope.Controllers
                 {
 
 
-
-                    ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                    var genre = new MovieFormViewModel
+                    {
+                        Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                    };
+                    //ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                     ModelState.AddModelError("Poster", ".png or .jpg image Only");
                     return View("MovieForm", movie);
 
@@ -150,8 +180,11 @@ namespace Cinema_Scope.Controllers
 
                 if (Poster.Length > 1048576)
                 {
-
-                    ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
+                    var genre = new MovieFormViewModel
+                    {
+                        Genres = await context.Genres.OrderBy(e => e.Name).ToListAsync()
+                    };
+                    //ViewData["Genre"] = await context.Genres.OrderBy(e => e.Name).ToListAsync();
                     ModelState.AddModelError("Poster", "Poster Size must be less than 1MB");
                     return View("MovieForm", movie);
                 }
@@ -175,7 +208,7 @@ namespace Cinema_Scope.Controllers
             if (id == null)
                 return BadRequest();
 
-            var movie = await context.Movies.Include(e=>e.Genre).SingleOrDefaultAsync(e=>e.id==id);
+            var movie = await context.Movies.Include(e => e.Genre).SingleOrDefaultAsync(e => e.id == id);
             if (movie == null)
                 return NotFound();
 
@@ -183,7 +216,7 @@ namespace Cinema_Scope.Controllers
 
         }
 
-        public async Task<IActionResult> Delete (int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
                 return BadRequest();
@@ -192,7 +225,7 @@ namespace Cinema_Scope.Controllers
             if (movie == null)
                 return NotFound();
 
-            context.Movies.Remove(movie);  
+            context.Movies.Remove(movie);
             context.SaveChanges();
             return RedirectToAction(nameof(Index));
 
